@@ -111,6 +111,51 @@ python -m app.main --ara-event data/sample_ara_event_group.json
 python -m app.main --ara-event data/sample_ara_event_sensitive.json
 ```
 
+## Offline approval workflow
+
+`app/approval.py` implements a fully offline two-step approval that
+mirrors the future real Ara flow: draft → user picks a reply → user
+must explicitly confirm → record marked as approved. **Nothing is ever
+sent.** No real WhatsApp message leaves this machine.
+
+Step 1 — pick a reply (creates a pending confirmation):
+
+```bash
+python -m app.main --ara-event data/sample_ara_event.json --select-reply 2
+```
+
+This generates the reply package, builds a pending confirmation for
+reply #2 (the warmer option), prints the confirmation block, and
+appends it to `data/pending_confirmations.json` with status
+`pending_confirmation`.
+
+Step 2 — approve it (must say exactly `confirm send`):
+
+```bash
+python -m app.main --ara-event data/sample_ara_event.json --select-reply 2 --confirm "confirm send"
+```
+
+The confirmation is then stored with status `approved_offline`,
+`would_send: false`, `sent: false`. Any other `--confirm` value
+results in `not_approved`. The CLI clearly prints that no real
+message was sent.
+
+Reply number mapping:
+
+| Number | Label  |
+|--------|--------|
+| 1      | casual |
+| 2      | warmer |
+| 3      | short  |
+
+`--select-reply` also works with `--sample`, but only applies to the
+**first** generated package (intentional limitation for the MVP).
+
+This is the same shape the real Ara integration will use — when
+WhatsApp dispatch is eventually wired up, the only addition is an
+explicit send call gated on `status == "approved_offline"` (or its
+online equivalent) plus the user's `confirm send` token.
+
 ## Ara adapter milestone
 
 `app/ara_adapter.py` is the boundary between Ara channel events and the
