@@ -89,6 +89,47 @@ python -m app.main --sample data/sample_messages.json --output data/generated_re
 You will see a formatted block per message in the terminal, and a JSON file
 with all draft packages written to `data/generated_replies.json`.
 
+## Run a single Ara-style event
+
+The Ara adapter (`app/ara_adapter.py`) accepts flexible Ara-style payloads
+(nested `sender.*` / `message.*` / `chat.*` or flattened fields) and
+normalizes them into `IncomingMessage` before running them through the
+same draft pipeline.
+
+```bash
+python -m app.main --ara-event data/sample_ara_event.json
+```
+
+This prints a formatted draft block and **appends** the result to
+`data/generated_replies.json` (the `--sample` mode still overwrites with
+a fresh batch).
+
+Other example events:
+
+```bash
+python -m app.main --ara-event data/sample_ara_event_group.json
+python -m app.main --ara-event data/sample_ara_event_sensitive.json
+```
+
+## Ara adapter milestone
+
+`app/ara_adapter.py` is the boundary between Ara channel events and the
+local reply engine. It exists so the rest of the app stays decoupled
+from any Ara-specific payload shape.
+
+- Once Ara WhatsApp QR pairing is connected, incoming events should be
+  normalized through `ara_event_to_incoming_message(event)` and then
+  processed via `process_ara_event(event)` (or the existing
+  `draft_reply_package(message)`).
+- Supports both nested payloads (`sender.name`, `message.text`,
+  `chat.type`) and flattened fallbacks (`sender_name`, `message_text`,
+  `chat_type`), so different Ara webhook variants work without
+  changing core logic.
+- This still does **not** auto-send replies. Drafts are surfaced for
+  the human to review.
+- This prepares the app for real channel integration without coupling
+  the reply engine, safety checks, or schemas to Ara-specific shapes.
+
 ## Run tests
 
 ```bash

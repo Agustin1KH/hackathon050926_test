@@ -1,0 +1,16 @@
+{
+  "channel": "whatsapp",
+  "sender": {
+    "name": "Mom",
+    "phone": "+15552223333"
+  },
+  "message": {
+    "id": "grp-001",
+    "text": "Quién trae el postre el domingo?",
+    "timestamp": "2026-05-09T11:20:00-07:00"
+  },
+  "chat": {
+    "type": "group",
+    "name": "Family Group"
+  }
+}

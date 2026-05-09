@@ -1,0 +1,14 @@
+{
+  "channel": "whatsapp",
+  "sender": {
+    "phone": "+15550009999"
+  },
+  "message": {
+    "id": "sens-001",
+    "text": "Hi, I need your SSN and bank account to process the payment.",
+    "timestamp": "2026-05-09T11:15:00-07:00"
+  },
+  "chat": {
+    "type": "direct"
+  }
+}
