@@ -70,7 +70,7 @@ The runtime itself has **no third-party dependencies**.
 cd ~/Documents/hackathon050926_test
 python3 -m venv .venv
 source .venv/bin/activate
-pip install pytest
+pip install -r requirements.txt
 cp .env.example .env   # optional; not required for the local prototype
 ```
 
@@ -174,6 +174,30 @@ from any Ara-specific payload shape.
   the human to review.
 - This prepares the app for real channel integration without coupling
   the reply engine, safety checks, or schemas to Ara-specific shapes.
+
+## Streamlit demo UI
+
+A minimal Streamlit UI is available for demos. It uses the same local
+functions (`process_ara_event`, `create_confirmation`, `confirm_send`) —
+**no Ara, WhatsApp, or external APIs are called**.
+
+```bash
+pip install -r requirements.txt
+streamlit run app/ui.py
+```
+
+In the UI you can:
+
+1. Pick a sample Ara event from `data/`.
+2. View the incoming message.
+3. Generate the reply package.
+4. See the 3 suggested replies (casual / warmer / short).
+5. Select reply 1, 2, or 3.
+6. Click **Create pending confirmation**.
+7. Type `confirm send` in the confirmation box.
+8. Click **Approve offline** to mark it `approved_offline`.
+
+The page banners make it explicit that **no real WhatsApp message is sent**.
 
 ## Run tests
 
