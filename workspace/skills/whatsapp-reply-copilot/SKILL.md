@@ -92,3 +92,20 @@ Recommendation:
 
 Manual review:
 {Yes/No + reason if yes}
+
+## Real WhatsApp channel rules
+
+These rules apply when (and only when) the agent is wired to a real
+WhatsApp inbound channel via Ara. Until then, the rules still encode
+the intended behavior so the system can be validated offline first.
+
+1. The agent may process inbound WhatsApp messages.
+2. The agent must never send a message to the original WhatsApp sender automatically.
+3. The agent must send draft suggestions only to the owner/control channel.
+4. The agent must require explicit human approval before any send action is even considered.
+5. The approval phrase must be exactly: confirm send
+6. Even after approval, this MVP records only approved_offline and does not dispatch.
+7. Unknown senders, group chats, romantic/sexual messages, professional conflict, legal, financial, medical, and immigration messages always require manual review.
+8. The agent should prefer silence over accidental sending.
+9. If the agent is unsure whether a message is safe, it must mark Manual review: Yes.
+10. The agent must include the phrase "No real WhatsApp message was sent" whenever it records an approval in this MVP.

@@ -219,6 +219,34 @@ spec for the agent. It defines:
 Keep this file as the source of truth — when we swap the rule-based engine
 for an LLM call, the prompt should be derived from this file.
 
+## Real WhatsApp integration plan
+
+See [`docs/REAL_WHATSAPP_INTEGRATION.md`](docs/REAL_WHATSAPP_INTEGRATION.md)
+for the full architecture diagram, setup checklist, safety rules, test
+plan, and rollback plan.
+
+Key points:
+
+- Ara supports WhatsApp QR pairing as the inbound channel.
+- This repo currently supports the **local side** of the flow only:
+  Ara event normalization (`app/ara_adapter.py`), reply drafting
+  (`app/reply_engine.py`), safety flags (`app/safety.py`), reply
+  selection, and offline approval (`app/approval.py`).
+- Real WhatsApp integration must first be **inbound-only**. The system
+  receives messages but does not reply back to WhatsApp.
+- The first real test will route drafts **only** to the owner/control
+  channel (a separate Ara DM, Telegram DM, or Slack DM). The original
+  sender must never see anything.
+- **No outbound dispatch should be implemented** until the inbound-only
+  flow is proven stable.
+- If a dispatch layer is ever added, it must be gated behind explicit
+  human confirmation — the existing `confirm send` phrase from
+  `app/approval.py` is the contract.
+
+The "Real WhatsApp channel rules" section of
+`workspace/skills/whatsapp-reply-copilot/SKILL.md` is the canonical
+source for the agent-side guardrails.
+
 ## Next steps for Ara integration
 
 1. Connect the Ara WhatsApp channel through QR pairing.
